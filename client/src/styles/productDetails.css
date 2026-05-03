@@ -1,0 +1,97 @@
+.pd-container {
+  display: flex;
+  padding: 40px;
+  gap: 60px;
+}
+
+/* LEFT */
+.pd-left img {
+  width: 450px;
+  object-fit: cover;
+}
+
+/* RIGHT */
+.pd-right {
+  max-width: 500px;
+}
+
+.pd-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1b3d2f;
+}
+
+.pd-sub {
+  margin: 10px 0;
+  color: #666;
+}
+
+.pd-price {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.pd-tax {
+  font-size: 13px;
+  color: #777;
+}
+
+/* COLORS */
+.color-boxes {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.color {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.color.active {
+  border: 2px solid #1b3d2f;
+}
+
+/* SIZE */
+.sizes {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.size {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+
+.size.active {
+  border: 2px solid #1b3d2f;
+}
+
+/* BUTTONS */
+.pd-buttons {
+  margin-top: 30px;
+  display: flex;
+}
+
+.add {
+  flex: 1;
+  padding: 15px;
+  background: #3f8d2f;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.buy {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #3f8d2f;
+  background: white;
+  color: #3f8d2f;
+  cursor: pointer;
+}
