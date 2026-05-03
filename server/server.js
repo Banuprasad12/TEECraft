@@ -10,16 +10,16 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ FIXED CORS
-const corsOptions = {
+// ✅ CORS FIX
+app.use(cors({
   origin: [
     "https://tee-craft-hlc2.vercel.app",
     "http://localhost:3000"
   ],
   credentials: true
-};
+}));
 
-app.use(cors(corsOptions));   // ✅ this is enough (NO app.options)
+// ❌ DO NOT USE app.options("*", ...)
 
 // ================= SESSION =================
 app.use(session({
@@ -35,12 +35,15 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 
-// ================= DATABASE =================
-const MONGO_URI = process.env.MONGO_URI;
+// ================= TEST ROUTE =================
+app.get("/test", (req, res) => {
+  res.send("Server is working");
+});
 
-mongoose.connect(MONGO_URI)
+// ================= DATABASE =================
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .catch(err => console.log("Mongo ERROR:", err));
 
 // ================= ERROR HANDLER =================
 app.use((err, req, res, next) => {
