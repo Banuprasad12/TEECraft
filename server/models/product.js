@@ -9,5 +9,4 @@ const productSchema = new mongoose.Schema({
   image: String
 });
 
-// 🔥 THIS LINE IS CRITICAL
 module.exports = mongoose.model("Product", productSchema);
