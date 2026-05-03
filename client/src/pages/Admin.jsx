@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config";
 
 export default function Admin() {
   const [form, setForm] = useState({
@@ -12,18 +13,23 @@ export default function Admin() {
   });
 
   const [products, setProducts] = useState([]);
-  const [editId, setEditId] = useState(null); // 🔥 NEW
+  const [editId, setEditId] = useState(null);
 
+  // 🔹 FETCH PRODUCTS
   const fetchProducts = async () => {
-    const res = await axios.get("http://localhost:5000/api/products");
-    setProducts(res.data);
+    try {
+      const res = await axios.get(`${BASE_URL}/api/products`);
+      setProducts(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  // 🔥 SUBMIT (ADD + UPDATE)
+  // 🔹 SUBMIT (ADD + UPDATE)
   const submit = async (e) => {
     e.preventDefault();
 
@@ -38,39 +44,46 @@ export default function Admin() {
       data.append("image", form.image);
     }
 
-    if (editId) {
-      // 🔥 UPDATE
-      await axios.put(
-        `http://localhost:5000/api/products/${editId}`,
-        data
-      );
-      setEditId(null);
-    } else {
-      // 🔥 ADD
-      await axios.post("http://localhost:5000/api/products", data);
+    try {
+      if (editId) {
+        // UPDATE
+        await axios.put(`${BASE_URL}/api/products/${editId}`, data);
+        setEditId(null);
+      } else {
+        // ADD
+        await axios.post(`${BASE_URL}/api/products`, data);
+      }
+
+      // RESET FORM
+      setForm({
+        name: "",
+        type: "polo",
+        price: "",
+        qty: "",
+        desc: "",
+        image: null
+      });
+
+      fetchProducts();
+
+    } catch (err) {
+      console.error(err);
     }
-
-    // 🔥 RESET FORM
-    setForm({
-      name: "",
-      type: "polo",
-      price: "",
-      qty: "",
-      desc: "",
-      image: null
-    });
-
-    fetchProducts();
   };
 
+  // 🔹 DELETE
   const deleteProduct = async (id) => {
     if (window.confirm("Delete product?")) {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
-      fetchProducts();
+      try {
+        await axios.delete(`${BASE_URL}/api/products/${id}`);
+        fetchProducts();
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
-  // 🔥 EDIT FUNCTION
+  // 🔹 EDIT
   const editProduct = (p) => {
     setForm({
       name: p.name,
@@ -82,28 +95,15 @@ export default function Admin() {
     });
 
     setEditId(p._id);
-
-    // scroll up
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <div style={{
-      padding: "20px",
-      fontFamily: "Arial",
-      color: "#222",
-      minHeight: "100vh"
-    }}>
+    <div style={containerStyle}>
       <h2 style={{ marginBottom: "20px" }}>Admin Dashboard</h2>
 
       {/* 🔹 FORM */}
-      <div style={{
-        background: "#ffffff",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        marginBottom: "30px"
-      }}>
+      <div style={formCard}>
         <h3>{editId ? "Edit Product" : "Add Product"}</h3>
 
         <form onSubmit={submit}>
@@ -112,13 +112,13 @@ export default function Admin() {
             placeholder="Name"
             required
             style={inputStyle}
-            onChange={e => setForm({...form, name: e.target.value})}
+            onChange={e => setForm({ ...form, name: e.target.value })}
           />
 
           <select
             value={form.type}
             style={inputStyle}
-            onChange={e => setForm({...form, type: e.target.value})}
+            onChange={e => setForm({ ...form, type: e.target.value })}
           >
             <option value="polo">Polo</option>
             <option value="round">Round Neck</option>
@@ -129,7 +129,7 @@ export default function Admin() {
             placeholder="Price"
             required
             style={inputStyle}
-            onChange={e => setForm({...form, price: e.target.value})}
+            onChange={e => setForm({ ...form, price: e.target.value })}
           />
 
           <input
@@ -137,20 +137,20 @@ export default function Admin() {
             placeholder="Qty"
             required
             style={inputStyle}
-            onChange={e => setForm({...form, qty: e.target.value})}
+            onChange={e => setForm({ ...form, qty: e.target.value })}
           />
 
           <textarea
             value={form.desc}
             placeholder="Description"
             style={inputStyle}
-            onChange={e => setForm({...form, desc: e.target.value})}
+            onChange={e => setForm({ ...form, desc: e.target.value })}
           />
 
           <input
             type="file"
             style={inputStyle}
-            onChange={e => setForm({...form, image: e.target.files[0]})}
+            onChange={e => setForm({ ...form, image: e.target.files[0] })}
           />
 
           <button style={btnStyle}>
@@ -162,13 +162,8 @@ export default function Admin() {
       {/* 🔹 TABLE */}
       <h3>Products</h3>
 
-      <table style={{
-        width: "100%",
-        borderCollapse: "collapse",
-        background: "#fff",
-        boxShadow: "0 0 10px rgba(0,0,0,0.1)"
-      }}>
-        <thead style={{ background: "#333", color: "white" }}>
+      <table style={tableStyle}>
+        <thead style={theadStyle}>
           <tr>
             <th style={thtd}>ID</th>
             <th style={thtd}>Name</th>
@@ -192,7 +187,7 @@ export default function Admin() {
               <td style={thtd}>
                 {p.image && (
                   <img
-                    src={`http://localhost:5000/uploads/${p.image}`}
+                    src={`${BASE_URL}/uploads/${p.image}`}
                     width="50"
                     alt=""
                   />
@@ -200,7 +195,6 @@ export default function Admin() {
               </td>
 
               <td style={thtd}>
-                {/* 🔥 EDIT */}
                 <button
                   style={{ marginRight: "10px" }}
                   onClick={() => editProduct(p)}
@@ -208,7 +202,6 @@ export default function Admin() {
                   Edit
                 </button>
 
-                {/* 🔥 DELETE */}
                 <button
                   style={deleteBtn}
                   onClick={() => deleteProduct(p._id)}
@@ -224,7 +217,23 @@ export default function Admin() {
   );
 }
 
-// 🔥 STYLES
+/* 🔥 STYLES */
+
+const containerStyle = {
+  padding: "20px",
+  fontFamily: "Arial",
+  color: "#222",
+  minHeight: "100vh"
+};
+
+const formCard = {
+  background: "#fff",
+  padding: "20px",
+  borderRadius: "10px",
+  boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+  marginBottom: "30px"
+};
+
 const inputStyle = {
   display: "block",
   margin: "10px 0",
@@ -250,6 +259,18 @@ const deleteBtn = {
   border: "none",
   borderRadius: "5px",
   cursor: "pointer"
+};
+
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  background: "#fff",
+  boxShadow: "0 0 10px rgba(0,0,0,0.1)"
+};
+
+const theadStyle = {
+  background: "#333",
+  color: "white"
 };
 
 const thtd = {
