@@ -2,14 +2,16 @@ const router = require("express").Router();
 const Product = require("../models/product");
 const multer = require("multer");
 const fs = require("fs");
+const path = require("path");
 
-// ✅ Ensure uploads folder exists (VERY IMPORTANT for Railway)
-const uploadDir = "uploads";
+// ================= UPLOAD FOLDER =================
+const uploadDir = path.join(__dirname, "../uploads");
+
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// 🔹 Multer setup
+// ================= MULTER =================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
@@ -26,11 +28,13 @@ const upload = multer({ storage });
 router.get("/", async (req, res) => {
   try {
     console.log("GET PRODUCTS HIT");
+
     const products = await Product.find();
     res.json(products);
+
   } catch (err) {
-    console.log("GET ERROR:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ GET PRODUCTS ERROR:", err);
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 });
 
@@ -51,8 +55,8 @@ router.post("/", upload.single("image"), async (req, res) => {
     res.json(product);
 
   } catch (err) {
-    console.log("POST ERROR:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ POST ERROR:", err);
+    res.status(500).json({ error: "Failed to add product" });
   }
 });
 
@@ -81,8 +85,8 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     res.json(updatedProduct);
 
   } catch (err) {
-    console.log("UPDATE ERROR:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ UPDATE ERROR:", err);
+    res.status(500).json({ error: "Failed to update product" });
   }
 });
 
@@ -92,9 +96,10 @@ router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     res.json(product);
+
   } catch (err) {
-    console.log("GET ONE ERROR:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ GET ONE ERROR:", err);
+    res.status(500).json({ error: "Failed to fetch product" });
   }
 });
 
@@ -104,9 +109,10 @@ router.delete("/:id", async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ message: "Deleted successfully" });
+
   } catch (err) {
-    console.log("DELETE ERROR:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ DELETE ERROR:", err);
+    res.status(500).json({ error: "Failed to delete product" });
   }
 });
 
