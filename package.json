@@ -1,0 +1,12 @@
+{
+  "name": "teecraft-railway-backend",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "build": "cd server && npm install",
+    "start": "cd server && npm start"
+  }
+}
