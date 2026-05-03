@@ -1,6 +1,7 @@
 import "../styles/products.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import lionLogo from "../assets/lion.svg";
 // 🔥 ICONS
@@ -22,7 +23,7 @@ export default function Products() {
   // 🔥 fetch products
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/products")
+      .get(`${BASE_URL}/api/products`)
       .then((res) => setProducts(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -160,7 +161,7 @@ export default function Products() {
 
               
               <img
-                src={`http://localhost:5000/uploads/${p.image}`}
+                src={`${BASE_URL}/uploads/${p.image}`}
                 className="product-img"
                 alt={p.name}
               />

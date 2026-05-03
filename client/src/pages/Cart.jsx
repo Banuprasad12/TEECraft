@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Cart.css";
+import BASE_URL from "../config";
 
 // 🔥 ADD THESE IMPORTS (MISSING IN YOUR CODE)
 import lionLogo from "../assets/lion.svg";
@@ -115,7 +116,7 @@ export default function Cart() {
                   src={
                     item.isCustom
                       ? item.image
-                      : `http://localhost:5000/uploads/${item.image}`
+                      : `${BASE_URL}/uploads/${item.image}`
                   }
                   alt=""
                 />

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaTrash, FaHeart, FaShoppingBag } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
+import BASE_URL from "../config";
 import "../styles/wishlist.css";
 import lionLogo from "../assets/lion.svg";
 
@@ -99,7 +100,7 @@ export default function Wishlist() {
                 <img
                   src={
                     item.image
-                      ? `http://localhost:5000/uploads/${item.image}`
+                      ? `${BASE_URL}/uploads/${item.image}`
                       : "/default.png"
                   }
                   alt={item.name}

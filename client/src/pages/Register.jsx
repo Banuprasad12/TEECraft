@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import BASE_URL from "../config";
 
 export default function Register() {
   const [data, setData] = useState({
@@ -13,7 +14,7 @@ export default function Register() {
 
     console.log("SENDING:", data); // 🔥 DEBUG
 
-    await axios.post("http://localhost:5000/api/auth/register", data);
+    await axios.post(`${BASE_URL}/api/auth/register`, data);
 
     alert("Registered successfully");
     window.location.href = "/";

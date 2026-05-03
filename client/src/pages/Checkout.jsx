@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import BASE_URL from "../config";
 
 export default function Checkout() {
   const [cart, setCart] = useState([]);
@@ -44,7 +45,7 @@ export default function Checkout() {
               src={
                 item.isCustom
                   ? item.image
-                  : `http://localhost:5000/uploads/${item.image}`
+                  : `${BASE_URL}/uploads/${item.image}`
               }
               width="80"
               alt=""

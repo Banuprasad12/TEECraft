@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/productDetails.css";
 
@@ -20,7 +21,7 @@ export default function ProductDetails() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/products/${id}`)
+      .get(`${BASE_URL}/api/products/${id}`)
       .then((res) => setProduct(res.data))
       .catch((err) => console.log(err));
   }, [id]);
@@ -96,7 +97,7 @@ export default function ProductDetails() {
         {/* LEFT */}
         <div className="pd-left">
           <img
-            src={`http://localhost:5000/uploads/${product.image}`}
+            src={`${BASE_URL}/uploads/${product.image}`}
             alt={product.name}
           />
         </div>
