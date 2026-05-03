@@ -27,6 +27,13 @@ app.use(session({
 app.use("/uploads", express.static("uploads"));
 
 // ROUTES
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "TeeCraft backend is running"
+  });
+});
+
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 
