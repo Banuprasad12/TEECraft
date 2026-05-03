@@ -7,7 +7,7 @@ const fs = require("fs");
 console.log("📦 Product routes loaded");
 
 // ================= SAFE UPLOAD PATH =================
-// Use /tmp for Railway (important)
+// Use /tmp for Railway
 const uploadDir = "/tmp/uploads";
 
 if (!fs.existsSync(uploadDir)) {
@@ -32,13 +32,19 @@ router.get("/", async (req, res) => {
   try {
     console.log("👉 GET PRODUCTS HIT");
 
-    const products = await Product.find().lean();
+    const products = await Product.find();
 
-    res.json(products || []);
+    console.log("✅ PRODUCTS:", products);
+
+    return res.status(200).json(products);
 
   } catch (err) {
-    console.error("❌ GET PRODUCTS ERROR:", err);
-    res.status(500).json({ error: err.message });
+    console.error("❌ REAL ERROR:", err);
+
+    return res.status(500).json({
+      message: "FAILED",
+      error: err.message
+    });
   }
 });
 
@@ -59,11 +65,11 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     await product.save();
 
-    res.json(product);
+    return res.json(product);
 
   } catch (err) {
     console.error("❌ POST ERROR:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -91,11 +97,11 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       { new: true }
     );
 
-    res.json(updatedProduct);
+    return res.json(updatedProduct);
 
   } catch (err) {
     console.error("❌ UPDATE ERROR:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -107,11 +113,11 @@ router.get("/:id", async (req, res) => {
 
     const product = await Product.findById(req.params.id);
 
-    res.json(product);
+    return res.json(product);
 
   } catch (err) {
     console.error("❌ GET ONE ERROR:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -123,11 +129,11 @@ router.delete("/:id", async (req, res) => {
 
     await Product.findByIdAndDelete(req.params.id);
 
-    res.json({ message: "Deleted successfully" });
+    return res.json({ message: "Deleted successfully" });
 
   } catch (err) {
     console.error("❌ DELETE ERROR:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
